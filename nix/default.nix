@@ -23,5 +23,5 @@ let
 in
   lib.fix (self: {
     base = baseWithOverrides;
-    inherit (base) lib pkgs;
+    inherit (baseWithOverrides) lib pkgs;
   } // import ./top-level self)

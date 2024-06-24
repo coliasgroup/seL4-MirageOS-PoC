@@ -11,7 +11,7 @@ self: super:
         in
           self.lib.makeScopeWithSplicing
             self.splicePackages
-            (thisSelf.callPackage ({ newScope }: newScope) {})
+            thisSelf.newScope
             otherSplices
             (_: {})
             (_: {})
