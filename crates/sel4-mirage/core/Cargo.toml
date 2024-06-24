@@ -1,0 +1,4 @@
+[package]
+name = "sel4-mirage-core"
+version = "0.1.0"
+edition = "2021"

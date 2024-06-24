@@ -1,0 +1,4 @@
+[package]
+name = "sel4-linux-syscall-types"
+version = "0.1.0"
+edition = "2021"

@@ -3,4 +3,7 @@
 resolver = "2"
 
 members = [
+    "crates/sel4-linux-syscall/musl",
+    "crates/sel4-linux-syscall/types",
+    "crates/sel4-mirage/core",
 ]
