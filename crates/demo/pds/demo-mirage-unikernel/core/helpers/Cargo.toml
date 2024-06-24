@@ -1,0 +1,17 @@
+[package]
+name = "demo-mirage-unikernel-core-helpers"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.smoltcp]
+version = "0.10.0"
+default-features = false
+features = [
+    "proto-ipv4",
+    "proto-dhcpv4",
+    "proto-dns",
+    "socket-dhcpv4",
+    "socket-dns",
+    "socket-tcp",
+    "log",
+]

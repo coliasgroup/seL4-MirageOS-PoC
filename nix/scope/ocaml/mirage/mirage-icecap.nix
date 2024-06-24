@@ -1,5 +1,4 @@
 { lib
-, icecapSrc
 , buildDunePackage
 , ocamlPackages, buildPackagesOCaml
 }:
@@ -7,7 +6,7 @@
 buildDunePackage rec {
   pname = "mirage-icecap";
   version = "0.1";
-  src = icecapSrc.relative "ocaml/mirage-icecap";
+  src = ../../../../ocaml/mirage-icecap;
   nativeBuildInputsOCaml = with buildPackagesOCaml; [
     lwt_ppx
   ];

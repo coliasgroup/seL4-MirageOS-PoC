@@ -1,0 +1,52 @@
+[package]
+name = "demo-mirage-unikernel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+demo-mirage-unikernel-core = { path = "core" }
+lock_api = "0.4.12"
+log = "0.4.17"
+sel4 = { path = "../../../../rust-sel4/crates/sel4" }
+sel4-driver-interfaces = { path = "../../../../rust-sel4/crates/sel4-driver-interfaces" }
+sel4-logging = { path = "../../../../rust-sel4/crates/sel4-logging" }
+sel4-microkit-message = { path = "../../../../rust-sel4/crates/sel4-microkit/message" }
+sel4-shared-ring-buffer = { path = "../../../../rust-sel4/crates/sel4-shared-ring-buffer" }
+sel4-sync = { path = "../../../../rust-sel4/crates/sel4-sync" }
+
+[dependencies.sel4-bounce-buffer-allocator]
+path = "../../../../rust-sel4/crates/sel4-bounce-buffer-allocator"
+
+[dependencies.sel4-externally-shared]
+path = "../../../../rust-sel4/crates/sel4-externally-shared"
+features = ["unstable"]
+
+[dependencies.sel4-immediate-sync-once-cell]
+path = "../../../../rust-sel4/crates/sel4-immediate-sync-once-cell"
+
+[dependencies.sel4-microkit]
+path = "../../../../rust-sel4/crates/sel4-microkit"
+default-features = false
+features = ["alloc"]
+
+[dependencies.sel4-microkit-driver-adapters]
+path = "../../../../rust-sel4/crates/sel4-microkit/driver-adapters"
+
+[dependencies.sel4-shared-ring-buffer-bookkeeping]
+path = "../../../../rust-sel4/crates/sel4-shared-ring-buffer/bookkeeping"
+
+[dependencies.sel4-shared-ring-buffer-smoltcp]
+path = "../../../../rust-sel4/crates/sel4-shared-ring-buffer/smoltcp"
+
+[dependencies.smoltcp]
+version = "0.10.0"
+default-features = false
+features = [
+    "proto-ipv4",
+    "proto-dhcpv4",
+    "proto-dns",
+    "socket-dhcpv4",
+    "socket-dns",
+    "socket-tcp",
+    "log",
+]

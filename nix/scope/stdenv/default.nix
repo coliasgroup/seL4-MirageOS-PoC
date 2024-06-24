@@ -20,4 +20,7 @@ in {
   inherit mkStdenv;
 
   stdenvMirage = mkStdenv (callPackage ./libc-wrappers/mirage.nix {});
+
+  # TODO
+  # stdenvMirage = mkStdenv musl;
 }

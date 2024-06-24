@@ -1,0 +1,3 @@
+ignore = [
+    "rust-sel4",
+]

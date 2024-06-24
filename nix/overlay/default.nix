@@ -20,6 +20,8 @@ self: super:
               inherit otherSplices; # for child spliced scopes
             })
           ;
+
+      overrideWorldScope = thisSelf.callPackage ../scope/world {};
     }
   );
 

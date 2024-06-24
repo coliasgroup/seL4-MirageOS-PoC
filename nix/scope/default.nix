@@ -1,4 +1,7 @@
 { lib, splicePackages
+, this
+, buildCratesInLayers
+, vendorLockfile
 }:
 
 self: with self;
@@ -6,7 +9,17 @@ self: with self;
 let
 
 in {
-  inherit (callPackage ./stdenv {}) mkStdenv stdenvMirage;
+  defaultRustEnvironment = this.defaultRustEnvironment.override {
+    vendoredSuperLockfile = vendorLockfile { lockfile = ../../Cargo.lock; };
+  };
+
+  buildCratesInLayers = this.buildCratesInLayers.override {
+    inherit defaultRustEnvironment;
+  };
+
+  crates = callPackage ./crates.nix {};
+
+  inherit (callPackage ./stdenv {}) stdenvMirage;
 
   musl = callPackage ./stdenv/musl.nix {};
 

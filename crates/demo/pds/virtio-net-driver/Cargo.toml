@@ -1,0 +1,28 @@
+[package]
+name = "virtio-net-driver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log = "0.4.17"
+sel4 = { path = "../../../../rust-sel4/crates/sel4" }
+sel4-logging = { path = "../../../../rust-sel4/crates/sel4-logging" }
+sel4-microkit = { path = "../../../../rust-sel4/crates/sel4-microkit", default-features = false }
+sel4-microkit-message = { path = "../../../../rust-sel4/crates/sel4-microkit/message" }
+sel4-shared-ring-buffer = { path = "../../../../rust-sel4/crates/sel4-shared-ring-buffer" }
+sel4-virtio-hal-impl = { path = "../../../../rust-sel4/crates/drivers/virtio/hal-impl" }
+sel4-virtio-net = { path = "../../../../rust-sel4/crates/drivers/virtio/net" }
+virtio-drivers = { version = "0.7.2", default-features = false, features = ["alloc"] }
+
+[dependencies.sel4-bounce-buffer-allocator]
+path = "../../../../rust-sel4/crates/sel4-bounce-buffer-allocator"
+
+[dependencies.sel4-externally-shared]
+path = "../../../../rust-sel4/crates/sel4-externally-shared"
+features = ["unstable"]
+
+[dependencies.sel4-immediate-sync-once-cell]
+path = "../../../../rust-sel4/crates/sel4-immediate-sync-once-cell"
+
+[dependencies.sel4-microkit-driver-adapters]
+path = "../../../../rust-sel4/crates/sel4-microkit/driver-adapters"

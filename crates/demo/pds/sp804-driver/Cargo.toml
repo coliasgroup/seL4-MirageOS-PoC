@@ -1,0 +1,13 @@
+[package]
+name = "sp804-driver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sel4-driver-interfaces = { path = "../../../../rust-sel4/crates/sel4-driver-interfaces" }
+sel4-microkit = { path = "../../../../rust-sel4/crates/sel4-microkit", default-features = false }
+sel4-microkit-message = { path = "../../../../rust-sel4/crates/sel4-microkit/message" }
+sel4-sp804-driver = { path = "../../../../rust-sel4/crates/drivers/sp804" }
+
+[dependencies.sel4-microkit-driver-adapters]
+path = "../../../../rust-sel4/crates/sel4-microkit/driver-adapters"
