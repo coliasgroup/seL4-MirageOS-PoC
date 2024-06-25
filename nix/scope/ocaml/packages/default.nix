@@ -27,10 +27,8 @@ let
 in
 
 # TODO weigh performance impact of spicing this scope against its benefits
+# TODO ensure this scope is not spliced within parent scope
 lib.makeScope newScope (self: standard self // (let inherit (self) callPackage; in {
-
-  # TODO ensure this scope is not spliced within parent scope
-  # __icecap_splice = false;
 
   # TODO abstract
   stdenv = stdenvMirage;

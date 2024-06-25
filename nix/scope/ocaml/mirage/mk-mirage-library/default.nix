@@ -23,14 +23,13 @@ buildOpamPackage rec {
     mkdir bin
     ln -s $(which $LD) bin/ld
     export PATH=bin:$PATH
-    ocamlfind ocamlopt -package main -c ${./x.ml} -o x.cmx
-    ocamlfind ocamlopt -package main -linkpkg -output-obj -o libmirage.o x.cmx
+    ocamlfind ocamlopt -package main -c ${./wrapper.ml} -o wrapper.cmx
+    ocamlfind ocamlopt -package main -linkpkg -output-obj -o libmirage.o wrapper.cmx
     $AR r libmirage.a libmirage.o
   '';
 
   installPhase = ''
-    mkdir -p $out/lib
-    cp libmirage.a $out/lib
+    install -D -t $out/lib libmirage.a
   '';
 
   NIX_LDFLAGS = [
@@ -41,8 +40,5 @@ buildOpamPackage rec {
 
   passthru = {
     inherit main;
-    providesLibs = [
-      "mirage"
-    ];
   };
 }

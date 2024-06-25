@@ -53,10 +53,4 @@ stdenv.mkDerivation rec {
 
   dontFixup = true;
 
-  passthru = {
-    providesLibs = [
-      "sel4asmrun"
-    ];
-  };
-
 }

@@ -1,6 +1,6 @@
 { lib, writeText, runCommand, linkFarm
 , buildPlatform, hostPlatform, targetPlatform
-, fetchFromGitLab
+, fetchFromGitHub
 , stdenvMirage
 }:
 
@@ -99,11 +99,10 @@ in {
 
   ocamlVersion = "4.07.2";
 
-  ocamlSrc = fetchFromGitLab {
-    group = "coliasgroup";
-    owner = "icecap";
+  ocamlSrc = fetchFromGitHub {
+    owner = "coliasgroup";
     repo = "ocaml";
-    rev = "1c258b34c42c4135239dbd82873c830ebb7708aa"; # branch: icecap
+    rev = "1c258b34c42c4135239dbd82873c830ebb7708aa"; # branch: sel4-mirage-poc
     hash = "sha256-UKKcR8KrnTKKLRif5wxO1wrnX4KREnDsl0xudrzBEg4=";
   };
 

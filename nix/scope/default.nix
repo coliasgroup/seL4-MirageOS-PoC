@@ -1,4 +1,4 @@
-{ lib, splicePackages
+{ lib, stdenv, splicePackages
 , this
 , buildCratesInLayers
 , vendorLockfile
@@ -7,6 +7,15 @@
 self: with self;
 
 let
+  overrideLibc = libc: stdenv.override (drv: {
+    cc = drv.cc.override {
+      inherit libc;
+      bintools = stdenv.cc.bintools.override {
+        inherit libc;
+      };
+    };
+    allowedRequisites = null;
+  });
 
 in {
   defaultRustEnvironment = this.defaultRustEnvironment.override {
@@ -19,9 +28,11 @@ in {
 
   crates = callPackage ./crates.nix {};
 
-  inherit (callPackage ./stdenv {}) stdenvMirage;
+  musl = callPackage ./musl.nix {};
 
-  musl = callPackage ./stdenv/musl.nix {};
+  muslForMirage = callPackage ./musl-for-mirage.nix {};
+
+  stdenvMirage = overrideLibc muslForMirage;
 
   ocamlScope =
     let

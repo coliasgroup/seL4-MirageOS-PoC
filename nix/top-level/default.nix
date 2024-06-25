@@ -4,15 +4,19 @@ let
 in {
   inherit (base) lib pkgs worlds;
 
+  inherit (pkgs.host.aarch64.none) this;
+
+  inherit (this) mirage;
+
   world = worlds.aarch64.qemu-arm-virt.microkit;
 
-  demo = world.demo;
+  inherit (world) demo;
+
+  inherit (demo) simulate;
 
   build = demo.links;
 
   pd = demo.pds.demo-mirage-unikernel;
-
-  inherit (demo) simulate;
 
   test =
     let
@@ -28,4 +32,10 @@ in {
 
         ${py}/bin/python3 ${../../test.py} ${simulate}
       '';
+
+  x = {
+    x = scope.mirage.ocamlScope.otherSplices.selfBuildHost.ocaml;
+  };
 }
+
+

@@ -1,5 +1,6 @@
 { lib
 , crateUtils
+, overridesForMkCrate
 }:
 
 let
@@ -9,22 +10,7 @@ let
   workspaceMemberPaths = map (member: workspaceDir + "/${member}") workspaceManifest.workspace.members;
 
   # TODO borrow from rust-sel4
-  overrides = {
-    sel4-sys = {
-      extraPaths = [
-        "build"
-      ];
-    };
-    sel4-bitfield-parser = {
-      extraPaths = [
-        "grammar.pest"
-      ];
-    };
-    sel4-kernel-loader = {
-      extraPaths = [
-        "asm"
-      ];
-    };
+  overrides = overridesForMkCrate // {
     demo-mirage-unikernel-core = {
       extraPaths = [
         "c"
@@ -35,6 +21,6 @@ let
 in
   crateUtils.augmentCrates
     (lib.listToAttrs (lib.forEach workspaceMemberPaths (cratePath: rec {
-      name = (crateUtils.crateManifest cratePath).package.name; # TODO redundant
+      name = (crateUtils.crateManifest cratePath).package.name;
       value = crateUtils.mkCrate cratePath (overrides.${name} or {});
     })))

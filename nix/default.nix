@@ -3,22 +3,9 @@
 let
   inherit (base) lib;
 
-  baseWithOverrides = base.override (superArgs: selfBase:
-    let
-      concreteSuperArgs = superArgs selfBase;
-    in
-      concreteSuperArgs // {
-        nixpkgsArgsFor = crossSystem:
-          let
-            superNixpkgsArgs = concreteSuperArgs.nixpkgsArgsFor crossSystem;
-          in
-            superNixpkgsArgs // {
-              overlays = superNixpkgsArgs.overlays ++ [
-                (import ./overlay)
-              ];
-            };
-      }
-  );
+  baseWithOverrides = base.withOverlays [
+    (import ./overlay)
+  ];
 
 in
   lib.fix (self: {

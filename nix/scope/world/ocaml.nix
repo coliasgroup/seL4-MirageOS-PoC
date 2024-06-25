@@ -1,73 +1,54 @@
-{ lib, stdenv
-, musl
-, defaultRustTargetTriple
-, icecap-ocaml-runtime
-, stdenvMirage
-, libsel4
+{ lib
 , llvmPackages
-, mkTaskHere
 , seL4Modifications
 , crateUtils
+, stdenvMirage
+, icecap-ocaml-runtime
+, mkTaskHere
 }:
 
-{
-  mkMirageBinary = { crate, targetTriple, mirageLibrary }:
+{ crate, targetTriple, mirageLibrary }:
   
-  let
-    rustTargetNameForEnv = lib.toUpper (lib.replaceStrings ["-"] ["_"] targetTriple.name);
-  in
+mkTaskHere rec {
+  stdenv = stdenvMirage;
 
-  mkTaskHere {
-    stdenv = stdenvMirage;
+  rootCrate = crate;
 
-    rootCrate = crate;
+  inherit targetTriple;
 
-    layers = [
-      crateUtils.defaultIntermediateLayer
-      {
-        crates = [
-          "sel4-microkit"
-        ];
-        modifications = seL4Modifications;
-      }
-    ];
+  layers = [
+    crateUtils.defaultIntermediateLayer
+    {
+      crates = [
+        "sel4-microkit"
+      ];
+      modifications = seL4Modifications;
+    }
+  ];
 
-    inherit targetTriple;
-
-    commonModifications = {
-      modifyDerivation = drv: drv.overrideAttrs (self: super: {
-        # HACK
-        # NOTE
-        #   Affects fingerprints, so causes last layer to build too much.
-        # TODO
-        #   If must use this hack, use extraLastLayerCargoConfig instead, which is
-        #   more composable. Env vars override instead of composing.
-        "CARGO_TARGET_${rustTargetNameForEnv}_RUSTFLAGS" = lib.concatMap (x: [ "-C" "link-arg=-l${x}" ]) [
-          "glue" "sel4asmrun" "mirage" "sel4asmrun" "glue" "c" "gcc"
-        ] ++ [
-          "-C" "linker=${stdenv.cc.targetPrefix}ld.lld"
-          # TODO shouldn't be necessary
-          "-C" (let cc = stdenv.cc.cc; in "link-arg=-L${cc}/lib/gcc/${cc.targetConfig}/${cc.version}")
-        ];
-      });
+  commonModifications = {
+    modifyConfig = lib.flip lib.recursiveUpdate {
+      target."cfg(any(unique_hack_mirage, target_os = \"none\"))".rustflags = [
+        "-C" "linker=${stdenv.cc.targetPrefix}ld.lld"
+      ] ++ lib.concatMap (x: [ "-C" "link-arg=-l${x}" ]) [
+        "c" "sel4asmrun" "glue" "mirage"
+      ];
     };
+  };
 
-    lastLayerModifications = {
-      modifyDerivation = drv: drv.overrideAttrs (self: super: {
-        buildInputs = (super.buildInputs or []) ++ [
-          musl
-          # stdenvMirage.cc.libc # HACK
-          # libsel4
-          icecap-ocaml-runtime
-          mirageLibrary
-        ];
-        nativeBuildInputs = (super.nativeBuildInputs or []) ++ [
-          llvmPackages.bintoolsNoLibc
-        ];
-        passthru = (super.passthru or {}) // {
-          inherit crate mirageLibrary;
-        };
-      });
-    };
+  lastLayerModifications = {
+    modifyDerivation = drv: drv.overrideAttrs (self: super: {
+      nativeBuildInputs = (super.nativeBuildInputs or []) ++ [
+        llvmPackages.bintoolsNoLibc
+      ];
+      buildInputs = (super.buildInputs or []) ++ [
+        stdenv.cc.libc
+        icecap-ocaml-runtime
+        mirageLibrary
+      ];
+      passthru = (super.passthru or {}) // {
+        inherit mirageLibrary;
+      };
+    });
   };
 }

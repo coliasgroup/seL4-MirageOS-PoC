@@ -1,8 +1,8 @@
 # Just for cross-compiling OCaml libraries
 
 { runCommandCC
-, musl
 , writeText
+, musl
 }:
 
 let
