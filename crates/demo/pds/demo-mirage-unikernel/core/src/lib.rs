@@ -17,6 +17,7 @@ use smoltcp::iface::Config;
 use smoltcp::phy::{Device, RxToken, TxToken};
 use smoltcp::time::Instant as SmoltcpInstant;
 
+use sel4_abstract_rc::ArcT;
 use sel4_bounce_buffer_allocator::Basic;
 use sel4_driver_interfaces::timer::DefaultTimer;
 use sel4_microkit::debug_println;
@@ -24,12 +25,12 @@ use sel4_microkit::{Handler, Infallible, Never};
 use sel4_microkit_driver_adapters::timer::client::Client as TimerClient;
 use sel4_mirage_core::ocaml;
 use sel4_shared_ring_buffer_smoltcp::DeviceImpl;
-use sel4_sync::{PanickingRawMutex, SharedArcMutex};
+use sel4_sync_trivial::PanickingRawMutex;
 
 mod syscall;
 mod time_hack;
 
-static GLOBAL_STATE: lock_api::Mutex<PanickingRawMutex, Option<State>> = lock_api::Mutex::new(None);
+static GLOBAL_STATE: Mutex<PanickingRawMutex, Option<State>> = Mutex::new(None);
 
 type NetIfaceId = usize;
 
@@ -37,7 +38,7 @@ pub struct State {
     timer_driver_channel: sel4_microkit::Channel,
     net_driver_channel: sel4_microkit::Channel,
     timer: Arc<Mutex<PanickingRawMutex, DefaultTimer<TimerClient>>>,
-    net_devices: Vec<DeviceImpl<Basic, SharedArcMutex<PanickingRawMutex>>>,
+    net_devices: Vec<DeviceImpl<Basic, PanickingRawMutex, ArcT>>,
 }
 
 pub struct HandlerImpl {
@@ -49,7 +50,7 @@ impl HandlerImpl {
         timer_driver_channel: sel4_microkit::Channel,
         net_driver_channel: sel4_microkit::Channel,
         timer: Arc<Mutex<PanickingRawMutex, DefaultTimer<TimerClient>>>,
-        net_device: DeviceImpl<Basic, SharedArcMutex<PanickingRawMutex>>,
+        net_device: DeviceImpl<Basic, PanickingRawMutex, ArcT>,
         net_config: Config,
     ) -> Self {
         let state = State {

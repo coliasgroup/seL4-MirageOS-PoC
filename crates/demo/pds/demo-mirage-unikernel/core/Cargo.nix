@@ -18,7 +18,8 @@ mk {
 
     inherit (localCrates)
       sel4
-      sel4-sync
+      sel4-sync-trivial
+      sel4-abstract-rc
       sel4-logging
       sel4-immediate-sync-once-cell
       sel4-microkit-message
