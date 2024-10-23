@@ -10,11 +10,11 @@ log = "0.4.17"
 sel4 = { path = "../../../../../rust-sel4/crates/sel4" }
 sel4-abstract-rc = { path = "../../../../../rust-sel4/crates/sel4-abstract-rc" }
 sel4-driver-interfaces = { path = "../../../../../rust-sel4/crates/sel4-driver-interfaces" }
-sel4-linux-syscall-musl = { path = "../../../../sel4-linux-syscall/musl" }
-sel4-linux-syscall-types = { path = "../../../../sel4-linux-syscall/types" }
+sel4-linux-syscall-types = { path = "../../../../../rust-sel4/crates/sel4-linux-syscall-types" }
 sel4-logging = { path = "../../../../../rust-sel4/crates/sel4-logging" }
 sel4-microkit-message = { path = "../../../../../rust-sel4/crates/sel4-microkit/message" }
 sel4-mirage-core = { path = "../../../../sel4-mirage/core" }
+sel4-musl = { path = "../../../../../rust-sel4/crates/sel4-musl" }
 sel4-shared-ring-buffer = { path = "../../../../../rust-sel4/crates/sel4-shared-ring-buffer" }
 sel4-sync-trivial = { path = "../../../../../rust-sel4/crates/sel4-sync/trivial" }
 serde = { version = "1.0.147", default-features = false, features = ["alloc", "derive"] }

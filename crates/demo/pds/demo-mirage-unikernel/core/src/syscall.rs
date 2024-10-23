@@ -4,8 +4,8 @@ use core::mem::MaybeUninit;
 use core::ops::Range;
 use core::ptr;
 
-use sel4_linux_syscall_musl::*;
-use sel4_linux_syscall_types::*;
+use sel4_musl::set_syscall_handler;
+use sel4_linux_syscall_types::{VaListAsSyscallArgs, Syscall, ParseSyscallError, SyscallReturnValue};
 use sel4_microkit::debug_print;
 
 const OCAML_HEAP_SIZE: usize = 2097152; // 2MB
@@ -17,15 +17,11 @@ fn ocaml_heap_ptr_range() -> Range<*const u8> {
 
 pub fn init() {
     unsafe {
-        set_syscall_handler(c_handle_syscall);
+        set_syscall_handler(handle_syscall);
     }
 }
 
-unsafe extern "C" fn c_handle_syscall(sysnum: i64, mut args: ...) -> i64 {
-    handle_syscall(sysnum, &mut args.as_va_list()).unwrap()
-}
-
-fn handle_syscall(sysnum: i64, args: &mut VaList) -> Result<i64, ()> {
+fn handle_syscall(syscall: Result<Syscall, ParseSyscallError<VaListAsSyscallArgs>) -> Result<SyscallReturnValue, ()> {
     match Syscall::get(sysnum, args) {
         Some(syscall) => {
             // println!("syscall: {:?}", syscall);
@@ -37,7 +33,7 @@ fn handle_syscall(sysnum: i64, args: &mut VaList) -> Result<i64, ()> {
     }
 }
 
-fn handle_known_syscall(syscall: Syscall) -> Result<i64, ()> {
+fn handle_known_syscall(syscall: Syscall) -> Result<SyscallReturnValue, ()> {
     use Syscall::*;
 
     Ok(match syscall {
@@ -53,7 +49,7 @@ fn handle_known_syscall(syscall: Syscall) -> Result<i64, ()> {
         }
         Mmap {
             addr,
-            length,
+            len,
             prot,
             flag,
             fd,
@@ -61,7 +57,7 @@ fn handle_known_syscall(syscall: Syscall) -> Result<i64, ()> {
         } => {
             if flag & MAP_ANONYMOUS != 0 {
                 let ret: *const [MaybeUninit<u8>] =
-                    Box::into_raw(Box::<[u8]>::new_uninit_slice(length));
+                    Box::into_raw(Box::<[u8]>::new_uninit_slice(len));
                 ret as *const () as i64
             } else {
                 -ENOMEM

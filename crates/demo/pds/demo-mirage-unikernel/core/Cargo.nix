@@ -30,7 +30,7 @@ mk {
       sel4-shared-ring-buffer
       sel4-shared-ring-buffer-smoltcp
       sel4-linux-syscall-types
-      sel4-linux-syscall-musl
+      sel4-musl
       sel4-mirage-core
     ;
 
